@@ -12,8 +12,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserSearchRequest {
     String userName;
-    String branchName;
-    String positionName;
-    String roleName;
-    String typeName;
+    Long branchId;
+    Long positionId;
+    Long roleId;
+    Long typeId;
 }

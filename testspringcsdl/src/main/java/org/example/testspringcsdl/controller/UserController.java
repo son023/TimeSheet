@@ -1,6 +1,5 @@
 package org.example.testspringcsdl.controller;
 
-import java.security.Principal;
 import java.util.List;
 
 import org.example.testspringcsdl.dto.ApiResponse;
@@ -11,7 +10,7 @@ import org.example.testspringcsdl.entity.User;
 import org.example.testspringcsdl.service.impl.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.AccessLevel;
@@ -52,25 +51,23 @@ public class UserController {
         return apiResponse;
     }
 
-    @GetMapping("/getByUserName/{userName}")
-    //    @PreAuthorize("hasAuthority('Admin.Users.View')")
-    List<UserResponse> getAllUser() {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        return userService.getUser();
-    }
+    //    @GetMapping()
+    //    //    @PreAuthorize("hasAuthority('Admin.Users.View')")
+    //    List<UserResponse> getAllUser() {
+    //        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+    //        return userService.getUser();
+    //    }
+
     @GetMapping("/searchUser")
     public List<User> searchUsers(
             @RequestParam(required = false) String userName,
-            @RequestParam(required = false) String branchName,
-            @RequestParam(required = false) String positionName,
-            @RequestParam(required = false) String roleName,
-            @RequestParam(required = false) String levelName) {
+            @RequestParam(required = false) Long branchId,
+            @RequestParam(required = false) Long positionId,
+            @RequestParam(required = false) Long roleId,
+            @RequestParam(required = false) Long typeId) {
 
-        return userService.searchUsers(new UserSearchRequest(userName, branchName, positionName, roleName, levelName));
-
+        return userService.searchUsers(new UserSearchRequest(userName, branchId, positionId, roleId, typeId));
     }
-
-
 
     @DeleteMapping("/{userId}")
     String deleteUserById(@PathVariable("userId") int userId) {
@@ -92,4 +89,8 @@ public class UserController {
         return apiResponse;
     }
 
+    @GetMapping()
+    public Page<UserResponse> pageUser(@RequestParam(required = false) Integer pageNo) {
+        return userService.getPageUser(pageNo);
+    }
 }

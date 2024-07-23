@@ -1,6 +1,5 @@
 package org.example.testspringcsdl.configuration;
 
-import org.example.testspringcsdl.service.impl.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,24 +17,24 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
-
+    @Autowired
     private CustomJwtDecoder customJwtDecoder;
-    private final String[] PUBLIC_ENDPOINTS = {"api/v1/auth/token", "api/v1/auth/introspect", "api/v1/auth/logout"};
+
+    private final String[] PUBLIC_ENDPOINTS = {
+        "api/v1/auth/refresh", "api/v1/auth/token", "api/v1/auth/introspect", "api/v1/auth/logout"
+    };
     private final String[] PUBLIC_ENDPOINTS_GET = {
         "api/v1/roles",
-        "api/v1/roles/{roleId}",
+        //        "api/v1/roles/{roleId}",
         "api/v1/users",
         "api/v1/branchs",
         "api/v1/levels",
         "api/v1/types",
-            "api/v1/users/searchUser",
+        "api/v1/users/searchUser",
         "api/v1/positions",
         "api/v1/users/getByUserName/{userName}",
         "api/v1/users/{userId}",
@@ -52,12 +51,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
                 .permitAll()
-                .requestMatchers(HttpMethod.GET,PUBLIC_ENDPOINTS_GET).permitAll()
+                .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET)
+                .permitAll()
                 .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_DELETE)
                 .permitAll()
                 .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_PUT)
                 .permitAll()
-
                 .anyRequest()
                 .authenticated());
         ;

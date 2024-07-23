@@ -12,9 +12,8 @@ spring:
 
 jwt:
     signerKey: "RohsA+YZeqwYeCN5N6Kg3JglXNUZng1qi3+FgZHLffpnALIHBdr0EWdHvd5RI7TV"
-    valid-duration: 15 #second
-    refreshable-duration: 120
-
+    valid-duration: 1000 # in second
+    refreshable-duration: 120 # in seconds
 #    jpa:
 #        hibernate:
 #            ddl-auto: update

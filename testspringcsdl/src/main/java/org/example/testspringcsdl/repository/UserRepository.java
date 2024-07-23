@@ -24,20 +24,16 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByUserName(String userName);
 
-    @Query("SELECT u FROM User u " +
-            "JOIN u.branch b " +
-            "JOIN u.position p " +
-            "JOIN u.role r " +
-            "JOIN u.type t " +
-            "WHERE (:userName IS NULL OR :userName = '' OR u.userName LIKE %:userName%) " +
-            "AND (:branchName IS NULL OR :branchName = '' OR b.branchName LIKE %:branchName%) " +
-            "AND (:positionName IS NULL OR :positionName = '' OR p.positionName LIKE %:positionName%) " +
-            "AND (:roleName IS NULL OR :roleName = '' OR r.roleName LIKE %:roleName%) " +
-            "AND (:typeName IS NULL OR :typeName = '' OR t.typeName LIKE %:typeName%)")
+    @Query("SELECT u FROM User u "
+            + "WHERE (:userName IS NULL OR :userName = '' OR LOWER(u.userName) LIKE LOWER(CONCAT('%', :userName, '%'))) "
+            + "AND (:branchId IS NULL OR u.branch.id = :branchId) "
+            + "AND (:positionId IS NULL OR u.position.id = :positionId) "
+            + "AND (:roleId IS NULL OR u.role.id = :roleId) "
+            + "AND (:typeId IS NULL OR u.type.id = :typeId)")
     List<User> searchUsers(
             @Param("userName") String userName,
-            @Param("branchName") String branchName,
-            @Param("positionName") String positionName,
-            @Param("roleName") String roleName,
-            @Param("typeName") String typeName);
+            @Param("branchId") Long branchId,
+            @Param("positionId") Long positionId,
+            @Param("roleId") Long roleId,
+            @Param("typeId") Long typeId);
 }

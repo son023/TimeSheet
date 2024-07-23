@@ -52,11 +52,11 @@ public class AuthenticationService implements IAuthenticationService {
 
     @NonFinal
     @Value("${jwt.valid-duration}")
-    protected static long VALID_DURATION;
+    protected long VALID_DURATION;
 
     @NonFinal
     @Value("${jwt.refreshable-duration}")
-    protected static long REFRESHABLE_DURATION;
+    protected long REFRESHABLE_DURATION;
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) throws JOSEException {
@@ -76,8 +76,8 @@ public class AuthenticationService implements IAuthenticationService {
                 .subject(user.getUserName())
                 .issuer("123456")
                 .issueTime(new Date())
-                .expirationTime(new Date(
-                        Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
+                .expirationTime(
+                        new Date(Instant.now().plus(1000, ChronoUnit.SECONDS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScope(user))
                 .build();
@@ -120,9 +120,8 @@ public class AuthenticationService implements IAuthenticationService {
 
         var username = signedJWT.getJWTClaimsSet().getSubject();
 
-        var user =
-                userRepository.findByUsername(username);
-//                        .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        var user = userRepository.findByUsername(username);
+        //                        .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
 
         var token = generateToken(user);
 

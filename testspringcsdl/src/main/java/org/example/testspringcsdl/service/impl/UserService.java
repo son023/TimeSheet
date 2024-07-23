@@ -13,6 +13,9 @@ import org.example.testspringcsdl.exception.ErrorCode;
 import org.example.testspringcsdl.mapper.UserMapper;
 import org.example.testspringcsdl.repository.*;
 import org.example.testspringcsdl.service.IUserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -136,13 +139,25 @@ public class UserService implements IUserService {
         }
         return userMapper.userToResponse(userRepository.save(user));
     }
+
     public List<User> searchUsers(UserSearchRequest userSearchRequest) {
+
+        String userName = (userSearchRequest.getUserName() == null
+                        || userSearchRequest.getUserName().isBlank())
+                ? null
+                : userSearchRequest.getUserName();
+
         return userRepository.searchUsers(
-                userSearchRequest.getUserName().isEmpty() ? null : userSearchRequest.getUserName(),
-                userSearchRequest.getBranchName().isEmpty() ? null : userSearchRequest.getBranchName(),
-                userSearchRequest.getPositionName().isEmpty() ? null : userSearchRequest.getPositionName() ,
-                userSearchRequest.getRoleName().isEmpty() ? null :  userSearchRequest.getRoleName(),
-                userSearchRequest.getTypeName().isEmpty() ? null : userSearchRequest.getTypeName()
-        );
+                userName,
+                userSearchRequest.getBranchId() == null ? null : userSearchRequest.getBranchId(),
+                userSearchRequest.getPositionId() == null ? null : userSearchRequest.getPositionId(),
+                userSearchRequest.getRoleId() == null ? null : userSearchRequest.getRoleId(),
+                userSearchRequest.getTypeId() == null ? null : userSearchRequest.getTypeId());
+    }
+
+    public Page<UserResponse> getPageUser(Integer pageNo) {
+        Pageable pageable = PageRequest.of(pageNo - 1, 10); // Trang 0-based
+        Page<User> userPage = userRepository.findAll(pageable);
+        return userPage.map(userMapper::userToResponse);
     }
 }
