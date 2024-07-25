@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,12 +26,12 @@ public class SecurityConfig {
     private CustomJwtDecoder customJwtDecoder;
 
     private final String[] PUBLIC_ENDPOINTS = {
-        "api/v1/auth/refresh", "api/v1/auth/token", "api/v1/auth/introspect", "api/v1/auth/logout"
+        "api/v1/auth/refresh", "api/v1/auth/login", "api/v1/auth/introspect", "api/v1/auth/logout"
     };
     private final String[] PUBLIC_ENDPOINTS_GET = {
         "api/v1/roles",
         //        "api/v1/roles/{roleId}",
-        "api/v1/users",
+//            "api/v1/users",
         "api/v1/branchs",
         "api/v1/levels",
         "api/v1/types",
@@ -49,7 +50,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
+        httpSecurity.authorizeHttpRequests(request -> request
+                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
                 .permitAll()
                 .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET)
                 .permitAll()
@@ -57,7 +59,9 @@ public class SecurityConfig {
                 .permitAll()
                 .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_PUT)
                 .permitAll()
+
                 .anyRequest()
+
                 .authenticated());
         ;
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer

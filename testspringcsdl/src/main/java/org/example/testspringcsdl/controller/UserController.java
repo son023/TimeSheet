@@ -2,6 +2,7 @@ package org.example.testspringcsdl.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.example.testspringcsdl.dto.ApiResponse;
 import org.example.testspringcsdl.dto.request.UserCreationRequest;
 import org.example.testspringcsdl.dto.request.UserSearchRequest;
@@ -11,6 +12,8 @@ import org.example.testspringcsdl.service.impl.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.AccessLevel;
@@ -19,6 +22,7 @@ import lombok.experimental.FieldDefaults;
 
 @RequiredArgsConstructor
 @RestController
+@EnableMethodSecurity
 @RequestMapping("/api/v1/users")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
@@ -26,7 +30,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping
-    ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest request) {
+    ApiResponse<UserResponse> createUser(@Valid @RequestBody UserCreationRequest request) {
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.createUser(request));
         return apiResponse;
@@ -51,12 +55,12 @@ public class UserController {
         return apiResponse;
     }
 
-    //    @GetMapping()
-    //    //    @PreAuthorize("hasAuthority('Admin.Users.View')")
-    //    List<UserResponse> getAllUser() {
-    //        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-    //        return userService.getUser();
-    //    }
+        @GetMapping()
+        @PreAuthorize("hasAuthority('Admin.Users.View')")
+        List<UserResponse> getAllUser() {
+//            Principal principal = SecurityContextHolder.getContext().getAuthentication();
+            return userService.getUser();
+        }
 
     @GetMapping("/searchUser")
     public List<User> searchUsers(
@@ -89,7 +93,7 @@ public class UserController {
         return apiResponse;
     }
 
-    @GetMapping()
+    @GetMapping("/page")
     public Page<UserResponse> pageUser(@RequestParam(required = false) Integer pageNo) {
         return userService.getPageUser(pageNo);
     }

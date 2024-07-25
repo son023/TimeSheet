@@ -21,14 +21,14 @@ public class RoleController {
     RoleService roleService;
 
     @PostMapping
-    ApiResponse<Role> createRole(@RequestBody RoleCreationRequest request) {
-        ApiResponse<Role> apiResponse = new ApiResponse<>();
+    ApiResponse<RoleResponse> createRole(@RequestBody RoleCreationRequest request) {
+        ApiResponse<RoleResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(roleService.createRole(request));
         return apiResponse;
     }
 
     @GetMapping
-    List<Role> getAllRoles() {
+    List<RoleResponse> getAllRoles() {
         return roleService.getRole();
     }
 

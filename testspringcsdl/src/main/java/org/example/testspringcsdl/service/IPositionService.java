@@ -1,3 +1,9 @@
 package org.example.testspringcsdl.service;
 
-public interface IPositionService {}
+import org.example.testspringcsdl.entity.Position;
+
+import java.util.List;
+
+public interface IPositionService {
+    List<Position> getPosition();
+}

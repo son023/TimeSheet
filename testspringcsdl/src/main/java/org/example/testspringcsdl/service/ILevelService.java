@@ -1,3 +1,9 @@
 package org.example.testspringcsdl.service;
 
-public interface ILevelService {}
+import org.example.testspringcsdl.entity.Level;
+
+import java.util.List;
+
+public interface ILevelService {
+    List<Level> getLevel();
+}

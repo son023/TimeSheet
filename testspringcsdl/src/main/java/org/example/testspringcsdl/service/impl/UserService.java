@@ -57,7 +57,7 @@ public class UserService implements IUserService {
                 .role(roleRepository.getById(request.getRoleId()))
                 .type(typeRepository.getById(request.getTypeId()))
                 .level(levelRepository.getById(request.getLevelId()))
-                .startDate(LocalDate.parse(request.getStartDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .startDate(request.getStartDate())
                 .allowedDay(request.getAllowedDay())
                 .salary(request.getSalary())
                 .salaryAt(LocalDate.parse(request.getSalaryAt(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
@@ -112,7 +112,7 @@ public class UserService implements IUserService {
 
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
-        user.setStartDate(LocalDate.parse(request.getStartDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        user.setStartDate(request.getStartDate());
         user.setAllowedDay(request.getAllowedDay());
         user.setSalary(request.getSalary());
         user.setSalaryAt(LocalDate.parse(request.getSalaryAt(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));

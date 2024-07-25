@@ -1,6 +1,8 @@
 package org.example.testspringcsdl.mapper;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.Generated;
 import org.example.testspringcsdl.dto.request.RoleCreationRequest;
@@ -54,6 +56,20 @@ public class RoleMapperImpl implements RoleMapper {
         roleResponse.setPermissions( permissionSetToPermissionResponseSet( role.getPermissions() ) );
 
         return roleResponse;
+    }
+
+    @Override
+    public List<RoleResponse> rolesToRespone(List<Role> role) {
+        if ( role == null ) {
+            return null;
+        }
+
+        List<RoleResponse> list = new ArrayList<RoleResponse>( role.size() );
+        for ( Role role1 : role ) {
+            list.add( roleToRespone( role1 ) );
+        }
+
+        return list;
     }
 
     protected PermissionResponse permissionToPermissionResponse(Permission permission) {

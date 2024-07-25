@@ -5,7 +5,9 @@ import java.util.List;
 import org.example.testspringcsdl.dto.request.PermissionCreationRequest;
 import org.example.testspringcsdl.dto.respone.PermissionResponse;
 import org.example.testspringcsdl.entity.Permission;
+import org.mapstruct.Mapper;
 
+@Mapper(componentModel = "spring")
 public interface PermissionMapper {
     Permission toPermission(PermissionCreationRequest request);
 

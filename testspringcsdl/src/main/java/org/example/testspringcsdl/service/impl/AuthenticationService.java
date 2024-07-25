@@ -70,31 +70,6 @@ public class AuthenticationService implements IAuthenticationService {
         return AuthenticationResponse.builder().token(token).authenticated(true).build();
     }
 
-    private String generateToken(User user) {
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUserName())
-                .issuer("123456")
-                .issueTime(new Date())
-                .expirationTime(
-                        new Date(Instant.now().plus(1000, ChronoUnit.SECONDS).toEpochMilli()))
-                .jwtID(UUID.randomUUID().toString())
-                .claim("scope", buildScope(user))
-                .build();
-
-        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
-
-        JWSObject jwsObject = new JWSObject(header, payload);
-        try {
-
-            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
-            return jwsObject.serialize();
-        } catch (JOSEException e) {
-            log.error("Khong the tao token", e);
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
     public IntrospectResponse introspectRespone(IntrospectRequest request) throws JOSEException, ParseException {
         String token = request.getToken();
@@ -107,6 +82,7 @@ public class AuthenticationService implements IAuthenticationService {
         return IntrospectResponse.builder().valid(isValid).build();
     }
 
+    @Override
     public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
         var signedJWT = verifyToken(request.getToken(), true);
 
@@ -128,14 +104,7 @@ public class AuthenticationService implements IAuthenticationService {
         return AuthenticationResponse.builder().token(token).authenticated(true).build();
     }
 
-    private String buildScope(User user) {
-        StringJoiner stringJoiner = new StringJoiner(" ");
-        stringJoiner.add("ROLE_" + user.getRole().getRoleName());
-        if (!CollectionUtils.isEmpty(user.getRole().getPermissions()))
-            user.getRole().getPermissions().forEach(permission -> stringJoiner.add(permission.getPermissionName()));
-        return stringJoiner.toString();
-    }
-
+    @Override
     public void logout(LogoutRequest request) throws ParseException, JOSEException {
         try {
             var signToken = verifyToken(request.getToken(), true);
@@ -168,5 +137,38 @@ public class AuthenticationService implements IAuthenticationService {
         if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         return signedJWT;
+    }
+
+    private String buildScope(User user) {
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        stringJoiner.add("ROLE_" + user.getRole().getRoleName());
+        if (!CollectionUtils.isEmpty(user.getRole().getPermissions()))
+            user.getRole().getPermissions().forEach(permission -> stringJoiner.add(permission.getPermissionName()));
+        return stringJoiner.toString();
+    }
+
+    private String generateToken(User user) {
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .subject(user.getUserName())
+                .issuer("123456")
+                .issueTime(new Date())
+                .expirationTime(
+                        new Date(Instant.now().plus(1000, ChronoUnit.SECONDS).toEpochMilli()))
+                .jwtID(UUID.randomUUID().toString())
+                .claim("scope", buildScope(user))
+                .build();
+
+        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
+
+        JWSObject jwsObject = new JWSObject(header, payload);
+        try {
+
+            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            return jwsObject.serialize();
+        } catch (JOSEException e) {
+            log.error("Khong the tao token", e);
+            throw new RuntimeException(e);
+        }
     }
 }

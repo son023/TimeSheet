@@ -26,12 +26,7 @@ public class UserMapperImpl implements UserMapper {
         user.setPassWord( request.getPassWord() );
         user.setFullName( request.getFullName() );
         user.setEmail( request.getEmail() );
-        if ( request.getStartDate() != null ) {
-            user.setStartDate( LocalDate.parse( request.getStartDate() ) );
-        }
-        else {
-            user.setStartDate( null );
-        }
+        user.setStartDate( request.getStartDate() );
         user.setAllowedDay( request.getAllowedDay() );
         user.setSalary( request.getSalary() );
         if ( request.getSalaryAt() != null ) {
@@ -56,9 +51,7 @@ public class UserMapperImpl implements UserMapper {
         user.passWord( request.getPassWord() );
         user.fullName( request.getFullName() );
         user.email( request.getEmail() );
-        if ( request.getStartDate() != null ) {
-            user.startDate( LocalDate.parse( request.getStartDate() ) );
-        }
+        user.startDate( request.getStartDate() );
         user.allowedDay( request.getAllowedDay() );
         user.salary( request.getSalary() );
         if ( request.getSalaryAt() != null ) {

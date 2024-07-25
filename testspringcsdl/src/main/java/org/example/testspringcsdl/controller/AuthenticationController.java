@@ -33,7 +33,7 @@ public class AuthenticationController {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
     AuthenticationService authenticationService;
 
-    @PostMapping("/token")
+    @PostMapping("/login")
     ApiResponse<AuthenticationResponse> authentication(@RequestBody AuthenticationRequest request) {
         AuthenticationResponse result = null;
         try {
