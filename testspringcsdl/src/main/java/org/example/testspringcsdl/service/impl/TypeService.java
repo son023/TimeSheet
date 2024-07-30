@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.example.testspringcsdl.entity.Type;
 import org.example.testspringcsdl.repository.TypeRepository;
-import org.example.testspringcsdl.service.IBranchService;
 import org.example.testspringcsdl.service.ITypeService;
 import org.springframework.stereotype.Service;
 

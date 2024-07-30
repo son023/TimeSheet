@@ -27,7 +27,8 @@ public class RoleController {
         apiResponse.setResult(roleService.createRole(request));
         return apiResponse;
     }
-   @PreAuthorize("hasAuthority('Admin.Users.View')")
+
+    @PreAuthorize("hasAuthority('Admin.Users.View')")
     @GetMapping
     List<RoleResponse> getAllRoles() {
         return roleService.getRole();

@@ -14,7 +14,7 @@ jwt:
     signerKey: "RohsA+YZeqwYeCN5N6Kg3JglXNUZng1qi3+FgZHLffpnALIHBdr0EWdHvd5RI7TV"
     api-prefix: "api/v1"
     valid-duration: 1000 # in second
-    refreshable-duration: 120 # in seconds
+    refreshable-duration: 3600 # in seconds
 #    jpa:
 #        hibernate:
 #            ddl-auto: update

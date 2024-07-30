@@ -27,7 +27,5 @@ public interface IBaseRedisService {
 
     void delete(String key, String field);
 
-    void delete(String key, List<String>  fields);
-
-
+    void delete(String key, List<String> fields);
 }

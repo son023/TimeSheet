@@ -16,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BranchService implements IBranchService {
     BranchRepository branchRepository;
+
     @Override
     public List<Branch> getBranch() {
         return branchRepository.findAll();

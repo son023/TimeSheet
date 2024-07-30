@@ -1,9 +1,9 @@
 package org.example.testspringcsdl.service;
 
-import org.example.testspringcsdl.entity.Branch;
 import java.util.List;
+
+import org.example.testspringcsdl.entity.Branch;
 
 public interface IBranchService {
     List<Branch> getBranch();
-
 }

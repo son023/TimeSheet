@@ -1,17 +1,13 @@
 package org.example.testspringcsdl.exception;
 
-import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import jakarta.validation.ConstraintViolation;
+
 import org.example.testspringcsdl.dto.ApiResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,9 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GlobalExceptionHandler {
     private static final String MIN_ATTRIBUTE = "min";
+
     @ExceptionHandler(value = AuthorizationDeniedException.class)
     ResponseEntity<ApiResponse> handlingAuthorizationDeniedException(AuthorizationDeniedException exception) {
-//        log.error("handlingAuthorizationDeniedException: ", exception);
+        //        log.error("handlingAuthorizationDeniedException: ", exception);
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
 
         return ResponseEntity.status(errorCode.getStatusCode())
@@ -47,7 +44,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
-
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse> handlingValidation(MethodArgumentNotValidException exception) {
         String enumKey = exception.getFieldError().getDefaultMessage();
@@ -58,7 +54,8 @@ public class GlobalExceptionHandler {
             errorCode = ErrorCode.valueOf(enumKey);
 
             ObjectError firstError = exception.getBindingResult().getAllErrors().stream()
-                    .filter(error -> error.unwrap(ConstraintViolation.class) != null).findAny()
+                    .filter(error -> error.unwrap(ConstraintViolation.class) != null)
+                    .findAny()
                     .orElse(null);
 
             if (firstError != null) {
@@ -100,6 +97,4 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(apiResponse);
     }
-
-
 }

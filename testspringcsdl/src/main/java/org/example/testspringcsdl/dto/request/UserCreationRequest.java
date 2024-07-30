@@ -1,19 +1,18 @@
 package org.example.testspringcsdl.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDate;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import org.example.testspringcsdl.exception.ErrorCode;
+import org.example.testspringcsdl.validator.DobConstraint;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.example.testspringcsdl.exception.ErrorCode;
-import org.example.testspringcsdl.validator.DobConstraint;
-
-import java.time.LocalDate;
-
-import org.example.testspringcsdl.exception.ErrorCode;
 
 @Data
 @AllArgsConstructor
@@ -21,8 +20,9 @@ import org.example.testspringcsdl.exception.ErrorCode;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserCreationRequest {
     ErrorCode errorCode;
+
     @NotBlank(message = "userName cannot be blank")
-            @Size(min=4,message = "USERNAME_INVALID")
+    @Size(min = 4, message = "USERNAME_INVALID")
     String userName;
 
     @NotBlank(message = "Password cannot be blank")
@@ -34,23 +34,17 @@ public class UserCreationRequest {
     @NotBlank(message = "email cannot be blank")
     String email;
 
-
     int positionId;
 
-
     int branchId;
-
 
     int workingTimeId;
 
     int roleId;
 
-
     int typeId;
 
-
     int levelId;
-
 
     @DobConstraint(min = 2, message = "INVALID_DOB")
     LocalDate startDate;
@@ -61,7 +55,6 @@ public class UserCreationRequest {
 
     @NotBlank(message = "salaryAt cannot be blank")
     String salaryAt;
-
 
     int isActive;
 

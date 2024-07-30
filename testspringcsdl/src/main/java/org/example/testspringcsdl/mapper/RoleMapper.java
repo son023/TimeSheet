@@ -1,15 +1,13 @@
 package org.example.testspringcsdl.mapper;
 
+import java.util.List;
+
 import org.example.testspringcsdl.dto.request.RoleCreationRequest;
 import org.example.testspringcsdl.dto.respone.RoleResponse;
-import org.example.testspringcsdl.dto.respone.UserResponse;
 import org.example.testspringcsdl.entity.Role;
-import org.example.testspringcsdl.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface RoleMapper {

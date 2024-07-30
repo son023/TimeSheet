@@ -3,6 +3,7 @@ package org.example.testspringcsdl.controller;
 import java.util.List;
 
 import jakarta.validation.Valid;
+
 import org.example.testspringcsdl.dto.ApiResponse;
 import org.example.testspringcsdl.dto.request.UserCreationRequest;
 import org.example.testspringcsdl.dto.request.UserSearchRequest;
@@ -55,13 +56,12 @@ public class UserController {
         return apiResponse;
     }
 
-        @GetMapping()
-//        @PreAuthorize("hasAuthority('Admin.Users.View')")
-        List<UserResponse> getAllUser() {
-//            Principal principal = SecurityContextHolder.getContext().getAuthentication();
-            return userService.getUser();
-        }
-
+    @GetMapping()
+    //        @PreAuthorize("hasAuthority('Admin.Users.View')")
+    List<UserResponse> getAllUser() {
+        //            Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        return userService.getUser();
+    }
 
     @GetMapping("/searchUser")
     public List<User> searchUsers(
@@ -93,6 +93,7 @@ public class UserController {
         apiResponse.setResult(userService.updateUser(userName, request));
         return apiResponse;
     }
+
     @PreAuthorize("hasAuthority('Admin.Users.View')")
     @GetMapping("/page")
     public Page<UserResponse> pageUser(@RequestParam(required = false) Integer pageNo) {

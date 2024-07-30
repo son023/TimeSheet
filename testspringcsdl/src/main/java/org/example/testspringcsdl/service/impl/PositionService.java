@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.example.testspringcsdl.entity.Position;
 import org.example.testspringcsdl.repository.PositionRepository;
-import org.example.testspringcsdl.service.IBranchService;
 import org.example.testspringcsdl.service.IPositionService;
 import org.springframework.stereotype.Service;
 

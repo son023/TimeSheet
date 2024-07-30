@@ -13,20 +13,21 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfiguration {
     @org.springframework.beans.factory.annotation.Value("6379")
     private String redisPort;
+
     @Value("localhost")
     private String redisHost;
 
     @Bean
-    JedisConnectionFactory jedisConnectionFactory(){
-        RedisStandaloneConfiguration redisStandaloneConfiguration=new RedisStandaloneConfiguration();
+    JedisConnectionFactory jedisConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisHost);
         redisStandaloneConfiguration.setPort(Integer.parseInt(redisPort));
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
     @Bean
-    RedisTemplate<String, Object> redisTemplate(){
-        RedisTemplate<String, Object> redisTemplate=new RedisTemplate<>();
+    RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -35,5 +36,4 @@ public class RedisConfiguration {
         redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
     }
-
 }

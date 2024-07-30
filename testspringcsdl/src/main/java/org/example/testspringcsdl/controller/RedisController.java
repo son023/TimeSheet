@@ -1,12 +1,13 @@
 package org.example.testspringcsdl.controller;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.example.testspringcsdl.service.IBaseRedisService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,8 +17,7 @@ public class RedisController {
     IBaseRedisService baseRedisService;
 
     @PostMapping
-    public void set(){
-        baseRedisService.set("hihi","ah");
+    public void set() {
+        baseRedisService.set("hihi", "ah");
     }
-
 }

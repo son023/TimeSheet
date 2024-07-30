@@ -1,5 +1,17 @@
 package org.example.testspringcsdl.components;
 
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.example.testspringcsdl.repository.InvalidatedTokenRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -7,29 +19,12 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.util.Pair;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import jakarta.servlet.http.HttpServletRequest;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.example.testspringcsdl.entity.User;
-import org.example.testspringcsdl.exception.AppException;
-import org.example.testspringcsdl.exception.ErrorCode;
-import org.example.testspringcsdl.repository.InvalidatedTokenRepository;
-import org.example.testspringcsdl.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
-import java.text.ParseException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -47,6 +42,7 @@ public class JwtTokenUtils {
     @NonFinal
     @Value("${jwt.refreshable-duration}")
     protected long REFRESHABLE_DURATION;
+
     @NonFinal
     @Value("${jwt.api-prefix}")
     String apiPrefix;
@@ -59,8 +55,9 @@ public class JwtTokenUtils {
                 .subject(authentication.getName())
                 .issuer("123456")
                 .issueTime(new Date())
-                .expirationTime(
-                        new Date(Instant.now().plus(isRefresh==true ? 3000: 1000, ChronoUnit.SECONDS).toEpochMilli()))
+                .expirationTime(new Date(Instant.now()
+                        .plus(isRefresh ? 30000 : 10000, ChronoUnit.SECONDS)
+                        .toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
                 .build();
 
@@ -76,29 +73,28 @@ public class JwtTokenUtils {
         }
     }
 
-    public boolean validateToken(String token,  UserDetails user) throws JOSEException, ParseException {
+    public boolean validateToken(String token, UserDetails user) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier((SIGNER_KEY.getBytes()));
         SignedJWT signedJWT = SignedJWT.parse(token);
         boolean verified = signedJWT.verify(verifier);
         Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        String userName=signedJWT.getJWTClaimsSet().getSubject();
+        String userName = signedJWT.getJWTClaimsSet().getSubject();
 
-        return verified && expiryTime.after(new Date()) && user.getUsername().equals(userName) ;
+        return verified && expiryTime.after(new Date()) && user.getUsername().equals(userName);
     }
+
     public boolean isBypassToken(HttpServletRequest request) {
         List<Pair<String, String>> bypassTokens = Arrays.asList(
                 Pair.of(String.format("%s/auth/logout", apiPrefix), "POST"),
                 Pair.of(String.format("%s/auth/introspect", apiPrefix), "POST"),
                 Pair.of(String.format("%s/auth/login", apiPrefix), "POST"),
-                Pair.of(String.format("%s/auth/refresh", apiPrefix), "POST")
-        );
+                Pair.of(String.format("%s/auth/refresh", apiPrefix), "POST"));
 
         String requestPath = request.getServletPath();
         String requestMethod = request.getMethod();
 
         for (Pair<String, String> bypassToken : bypassTokens) {
-            if (requestPath.contains(bypassToken.getLeft())
-                    && requestMethod.equals(bypassToken.getRight())) {
+            if (requestPath.contains(bypassToken.getLeft()) && requestMethod.equals(bypassToken.getRight())) {
                 return true;
             }
         }
@@ -107,10 +103,6 @@ public class JwtTokenUtils {
     }
 
     public boolean isLogout(SignedJWT signedJWT) throws ParseException {
-        return invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())? true:false;
+        return invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()) ? true : false;
     }
-
-
-
-
 }

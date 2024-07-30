@@ -37,11 +37,10 @@ import lombok.experimental.FieldDefaults;
 public class AuthenticationController {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
     AuthenticationService authenticationService;
-    AuthenticationManager authenticationManager;
+
     JwtTokenUtils jwtTokenUtils;
 
-
-    @PostMapping("/introspect")
+    @PostMapping("introspect")
     ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request)
             throws ParseException, JOSEException {
         log.error("loi o day");
@@ -50,34 +49,25 @@ public class AuthenticationController {
         return ApiResponse.<IntrospectResponse>builder().result(result).build();
     }
 
-    @PostMapping("/logout")
+    @PostMapping("logout")
     ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
         authenticationService.logout(request);
         return ApiResponse.<Void>builder().build();
     }
+
     @PostMapping("login")
-     ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUserName(),
-                        request.getPassWord()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtTokenUtils.generateToken(authentication,false);
-        String refreshToken= jwtTokenUtils.generateToken(authentication,true);
+    ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+        AuthenticationResponse authenticationResponse=authenticationService.login(request);
         return ApiResponse.<AuthenticationResponse>builder()
                 .code(999)
-                .result(AuthenticationResponse.builder()
-                                .token(token)
-                                        .refreshToken(refreshToken)
-                                                .
-                        build())
+                .result(authenticationResponse)
                 .build();
     }
 
-//    @PostMapping("/refresh")
-//    ApiResponse<AuthenticationResponse> authenticate(@RequestBody RefreshRequest request)
-//            throws ParseException, JOSEException {
-//        var result = authenticationService.refreshToken(request);
-//        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
-//    }
+        @PostMapping("refresh")
+        ApiResponse<AuthenticationResponse> authenticate(@RequestBody RefreshRequest request)
+                throws ParseException, JOSEException {
+            var result = authenticationService.refreshToken(request);
+            return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+        }
 }
