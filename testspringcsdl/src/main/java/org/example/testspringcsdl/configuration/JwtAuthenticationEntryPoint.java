@@ -13,7 +13,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(

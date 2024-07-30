@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService implements IUserService {
     UserMapper userMapper;
     UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
+
     BranchRepository branchRepository;
     WorkingTimeRepository workingTimeRepository;
     RoleRepository roleRepository;
@@ -45,6 +46,7 @@ public class UserService implements IUserService {
         if (userRepository.existsByUserName(request.getUserName())) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         //        Long salary=Long.parseLong(String.valueOf(request.getSalary()));
         var user = User.builder()
                 .userName(request.getUserName())

@@ -2,6 +2,7 @@ package org.example.testspringcsdl.controller;
 
 import java.text.ParseException;
 
+import org.example.testspringcsdl.components.JwtTokenUtils;
 import org.example.testspringcsdl.dto.ApiResponse;
 import org.example.testspringcsdl.dto.request.AuthenticationRequest;
 import org.example.testspringcsdl.dto.request.IntrospectRequest;
@@ -12,6 +13,10 @@ import org.example.testspringcsdl.dto.respone.IntrospectResponse;
 import org.example.testspringcsdl.service.impl.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,21 +37,9 @@ import lombok.experimental.FieldDefaults;
 public class AuthenticationController {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
     AuthenticationService authenticationService;
+    AuthenticationManager authenticationManager;
+    JwtTokenUtils jwtTokenUtils;
 
-    @PostMapping("/login")
-    ApiResponse<AuthenticationResponse> authentication(@RequestBody AuthenticationRequest request) {
-        AuthenticationResponse result = null;
-        try {
-            result = authenticationService.authenticate(request);
-        } catch (JOSEException e) {
-            throw new RuntimeException(e);
-        }
-
-        return ApiResponse.<AuthenticationResponse>builder()
-                .code(999)
-                .result(result)
-                .build();
-    }
 
     @PostMapping("/introspect")
     ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request)
@@ -62,11 +55,29 @@ public class AuthenticationController {
         authenticationService.logout(request);
         return ApiResponse.<Void>builder().build();
     }
-
-    @PostMapping("/refresh")
-    ApiResponse<AuthenticationResponse> authenticate(@RequestBody RefreshRequest request)
-            throws ParseException, JOSEException {
-        var result = authenticationService.refreshToken(request);
-        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+    @PostMapping("login")
+     ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUserName(),
+                        request.getPassWord()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtTokenUtils.generateToken(authentication,false);
+        String refreshToken= jwtTokenUtils.generateToken(authentication,true);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .code(999)
+                .result(AuthenticationResponse.builder()
+                                .token(token)
+                                        .refreshToken(refreshToken)
+                                                .
+                        build())
+                .build();
     }
+
+//    @PostMapping("/refresh")
+//    ApiResponse<AuthenticationResponse> authenticate(@RequestBody RefreshRequest request)
+//            throws ParseException, JOSEException {
+//        var result = authenticationService.refreshToken(request);
+//        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+//    }
 }

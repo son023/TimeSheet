@@ -7,6 +7,7 @@ import org.example.testspringcsdl.dto.request.RoleCreationRequest;
 import org.example.testspringcsdl.dto.respone.RoleResponse;
 import org.example.testspringcsdl.entity.Role;
 import org.example.testspringcsdl.service.impl.RoleService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.AccessLevel;
@@ -26,7 +27,7 @@ public class RoleController {
         apiResponse.setResult(roleService.createRole(request));
         return apiResponse;
     }
-
+   @PreAuthorize("hasAuthority('Admin.Users.View')")
     @GetMapping
     List<RoleResponse> getAllRoles() {
         return roleService.getRole();

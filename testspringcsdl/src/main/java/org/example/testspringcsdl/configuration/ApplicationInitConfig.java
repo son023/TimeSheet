@@ -7,6 +7,7 @@ import org.example.testspringcsdl.repository.*;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import lombok.AccessLevel;
@@ -29,6 +30,7 @@ public class ApplicationInitConfig {
 
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository) {
+
         return args -> {
             if (userRepository.findByUserName("admin").isEmpty()) {
                 var user = User.builder()
@@ -39,7 +41,7 @@ public class ApplicationInitConfig {
                         .position(positionRepository.getById(1))
                         .branch(branchRepository.getById(1))
                         .workingTime(workingTimeRepository.getById(1))
-                        .role(roleRepository.getById(1))
+                        .role(roleRepository.getById(4))
                         .type(typeRepository.getById(1))
                         .level(levelRepository.getById(1))
                         .startDate(LocalDate.now())

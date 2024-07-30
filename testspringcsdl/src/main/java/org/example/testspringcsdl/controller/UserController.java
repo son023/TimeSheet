@@ -56,11 +56,12 @@ public class UserController {
     }
 
         @GetMapping()
-        @PreAuthorize("hasAuthority('Admin.Users.View')")
+//        @PreAuthorize("hasAuthority('Admin.Users.View')")
         List<UserResponse> getAllUser() {
 //            Principal principal = SecurityContextHolder.getContext().getAuthentication();
             return userService.getUser();
         }
+
 
     @GetMapping("/searchUser")
     public List<User> searchUsers(
@@ -92,7 +93,7 @@ public class UserController {
         apiResponse.setResult(userService.updateUser(userName, request));
         return apiResponse;
     }
-
+    @PreAuthorize("hasAuthority('Admin.Users.View')")
     @GetMapping("/page")
     public Page<UserResponse> pageUser(@RequestParam(required = false) Integer pageNo) {
         return userService.getPageUser(pageNo);

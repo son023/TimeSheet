@@ -1,7 +1,6 @@
 package org.example.testspringcsdl.entity;
 
 import java.time.LocalDate;
-
 import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -11,13 +10,13 @@ import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "users")
-@Data
 @AllArgsConstructor
+@Data
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class User {
+public class User  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -46,6 +45,7 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "working_time_id")
     WorkingTime workingTime;
+
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -76,4 +76,5 @@ public class User {
 
     @Column(name = "sex")
     String sex;
+
 }

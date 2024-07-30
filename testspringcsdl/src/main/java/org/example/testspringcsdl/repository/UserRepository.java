@@ -6,6 +6,7 @@ import java.util.Optional;
 import jakarta.transaction.Transactional;
 
 import org.example.testspringcsdl.entity.User;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +23,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value = "SELECT * FROM users u WHERE u.user_name = ?1", nativeQuery = true)
     User findByUsername(String userName);
 
+    @EntityGraph(attributePaths = {"role.permissions"})
     Optional<User> findByUserName(String userName);
 
     @Query("SELECT u FROM User u "

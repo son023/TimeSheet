@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     private static final String MIN_ATTRIBUTE = "min";
     @ExceptionHandler(value = AuthorizationDeniedException.class)
     ResponseEntity<ApiResponse> handlingAuthorizationDeniedException(AuthorizationDeniedException exception) {
-        log.error("handlingAuthorizationDeniedException: ", exception);
+//        log.error("handlingAuthorizationDeniedException: ", exception);
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
 
         return ResponseEntity.status(errorCode.getStatusCode())
@@ -47,14 +47,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
-//    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-//    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-//        log.error("handleMethodArgumentNotValidException: ");
-//        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
-//        String errors = fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(", "));
-//
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-//    }
+
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse> handlingValidation(MethodArgumentNotValidException exception) {
         String enumKey = exception.getFieldError().getDefaultMessage();
