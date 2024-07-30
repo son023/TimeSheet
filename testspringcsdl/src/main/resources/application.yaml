@@ -10,6 +10,20 @@ spring:
         username: postgres
         password: 123456
 
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: wonwon5800@gmail.com
+        password: mxrm tgfr efgi rdml
+        properties:
+            mail:
+                transport:
+                    protocol: smtp
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+
 jwt:
     signerKey: "RohsA+YZeqwYeCN5N6Kg3JglXNUZng1qi3+FgZHLffpnALIHBdr0EWdHvd5RI7TV"
     api-prefix: "api/v1"

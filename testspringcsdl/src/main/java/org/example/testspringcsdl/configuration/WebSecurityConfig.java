@@ -35,7 +35,6 @@ public class WebSecurityConfig {
     String apiPrefix;
 
     private String[] PUBLIC_ENDPOINTS;
-    private String[] PUBLIC_ENDPOINTS_GET;
     private final JwtTokenFilter jwtTokenFilter;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;

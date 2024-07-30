@@ -14,7 +14,10 @@ import com.nimbusds.jose.JOSEException;
 public interface IAuthenticationService {
 
     IntrospectResponse introspectRespone(IntrospectRequest request) throws JOSEException, ParseException;
-       AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException;
+
+    AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException;
+
     AuthenticationResponse login(AuthenticationRequest request);
+
     void logout(LogoutRequest request) throws ParseException, JOSEException;
 }

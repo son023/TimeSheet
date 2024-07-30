@@ -13,10 +13,6 @@ import org.example.testspringcsdl.dto.respone.IntrospectResponse;
 import org.example.testspringcsdl.service.impl.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,17 +53,17 @@ public class AuthenticationController {
 
     @PostMapping("login")
     ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
-        AuthenticationResponse authenticationResponse=authenticationService.login(request);
+        AuthenticationResponse authenticationResponse = authenticationService.login(request);
         return ApiResponse.<AuthenticationResponse>builder()
                 .code(999)
                 .result(authenticationResponse)
                 .build();
     }
 
-        @PostMapping("refresh")
-        ApiResponse<AuthenticationResponse> authenticate(@RequestBody RefreshRequest request)
-                throws ParseException, JOSEException {
-            var result = authenticationService.refreshToken(request);
-            return ApiResponse.<AuthenticationResponse>builder().result(result).build();
-        }
+    @PostMapping("refresh")
+    ApiResponse<AuthenticationResponse> authenticate(@RequestBody RefreshRequest request)
+            throws ParseException, JOSEException {
+        var result = authenticationService.refreshToken(request);
+        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+    }
 }

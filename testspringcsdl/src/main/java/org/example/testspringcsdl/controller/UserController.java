@@ -5,14 +5,18 @@ import java.util.List;
 import jakarta.validation.Valid;
 
 import org.example.testspringcsdl.dto.ApiResponse;
+
+import org.example.testspringcsdl.dto.request.EmailRequest;
 import org.example.testspringcsdl.dto.request.UserCreationRequest;
 import org.example.testspringcsdl.dto.request.UserSearchRequest;
 import org.example.testspringcsdl.dto.respone.UserResponse;
 import org.example.testspringcsdl.entity.User;
+import org.example.testspringcsdl.service.impl.EmailSenderService;
 import org.example.testspringcsdl.service.impl.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
@@ -29,14 +33,13 @@ import lombok.experimental.FieldDefaults;
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     UserService userService;
-
+    EmailSenderService emailSenderService;
     @PostMapping
     ApiResponse<UserResponse> createUser(@Valid @RequestBody UserCreationRequest request) {
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.createUser(request));
         return apiResponse;
     }
-
     @GetMapping("/myinfo")
     UserResponse getMyInfo() {
         return userService.getMyInfo();
@@ -96,7 +99,13 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('Admin.Users.View')")
     @GetMapping("/page")
-    public Page<UserResponse> pageUser(@RequestParam(required = false) Integer pageNo) {
+     Page<UserResponse> pageUser(@RequestParam(required = false) Integer pageNo) {
         return userService.getPageUser(pageNo);
+    }
+
+    @PostMapping("email")
+    String  sendEmail( @RequestBody EmailRequest request) {
+        emailSenderService.sendEmail(request);
+        return "apiResponse";
     }
 }
